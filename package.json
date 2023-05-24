@@ -1,0 +1,9 @@
+{
+  "name": "whatsthedamage-v2",
+  "version": "1.0.0",
+  "description": "Browser based expense tracker",
+  "main": "index.js",
+  "repository": "git@github-limecodes:limecodes/whatsthedamage-v2.git",
+  "license": "Private",
+  "private": true
+}
