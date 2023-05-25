@@ -37,6 +37,7 @@ export function TransactionTable({ transactions }: TransactionTableProps) {
             <TableCell>Description</TableCell>
             <TableCell>Balance After</TableCell>
             <TableCell>Category</TableCell>
+            <TableCell>Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -48,6 +49,9 @@ export function TransactionTable({ transactions }: TransactionTableProps) {
                 <TableCell>{description}</TableCell>
                 <TableCell>{balanceAfter}</TableCell>
                 <TableCell>Category Placeholder</TableCell>
+                <TableCell>
+                	<button>Exclude</button>
+                </TableCell>
               </TableRow>
             ),
           )}
