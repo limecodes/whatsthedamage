@@ -1,25 +1,17 @@
 import React, { ChangeEvent, useRef } from 'react'
-import Papa from 'papaparse'
 
-export function FileUpload() {
-	const inputRef = useRef<HTMLInputElement | null>(null)
+interface FileUploadProps {
+  onFileUpload: (event: ChangeEvent<HTMLInputElement>) => void
+}
 
-	function handleClick() {
-		if (inputRef.current) {
-			inputRef.current.click()
-		}
-	}
+export function FileUpload({ onFileUpload }: FileUploadProps) {
+  const inputRef = useRef<HTMLInputElement | null>(null)
 
-	function handleFile(event: ChangeEvent<HTMLInputElement>) {
-		const file = event.target.files && event.target.files[0]
-		if (file) {
-			Papa.parse(file, {
-				complete: function(results) {
-					console.log('results', results.data)
-				}
-			})
-		}
-	}
+  function handleClick() {
+    if (inputRef.current) {
+      inputRef.current.click()
+    }
+  }
 
   return (
     <div>
@@ -27,7 +19,7 @@ export function FileUpload() {
         type="file"
         style={{ display: 'none' }}
         ref={inputRef}
-        onChange={handleFile}
+        onChange={onFileUpload}
       />
       <button onClick={handleClick}>Select File</button>
     </div>
