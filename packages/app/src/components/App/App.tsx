@@ -12,7 +12,9 @@ export function App() {
         <CardHeader title="Step 1" />
         <CardContent>
           <p>Upload your statement in csv format.</p>
-          <p>Retrieve a CSV statement for the period that you want to analyse.</p>
+          <p>
+            Retrieve a CSV statement for the period that you want to analyse.
+          </p>
           <p>Normally it's from your last pay up to the latest pay.</p>
           <FileUpload />
         </CardContent>
