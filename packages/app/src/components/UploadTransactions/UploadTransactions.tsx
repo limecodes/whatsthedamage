@@ -5,7 +5,7 @@ import CardContent from '@mui/material/CardContent'
 import { FileUpload } from '../FileUpload'
 
 interface UploadTransactionsProps {
-	onSubmitFile: (event: ChangeEvent<HTMLInputElement>) => void
+  onSubmitFile: (event: ChangeEvent<HTMLInputElement>) => void
 }
 
 export function UploadTransactions({ onSubmitFile }: UploadTransactionsProps) {

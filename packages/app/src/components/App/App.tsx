@@ -6,7 +6,14 @@ import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import { FileUpload } from '../FileUpload'
 import { UploadTransactions } from '../UploadTransactions'
-import { toCamelCase, getUnixTimestamp, rawToCamelCasedHeader, toPositiveNumber, toNumber } from './utils'
+import { TransactionTable } from '../TransactionTable'
+import {
+  toCamelCase,
+  getUnixTimestamp,
+  rawToCamelCasedHeader,
+  toPositiveNumber,
+  toNumber,
+} from './utils'
 import { RawTransaction, RawHeader, Transaction } from './types'
 
 function convertRawToTransaction(
@@ -81,7 +88,11 @@ export function App() {
 
   return (
     <Container>
-      {transactions.length > 0 ? <p>{JSON.stringify(transactions)}</p> : <UploadTransactions onSubmitFile={handleFile} />}
+      {transactions.length > 0 ? (
+        <TransactionTable transactions={transactions} />
+      ) : (
+        <UploadTransactions onSubmitFile={handleFile} />
+      )}
     </Container>
   )
 }
