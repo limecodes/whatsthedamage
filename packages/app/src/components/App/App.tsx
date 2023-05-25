@@ -26,7 +26,7 @@ function toCamelCase(str: string) {
     .replace(/^[A-Z]/, (chr) => chr.toLowerCase())
 }
 
-function createRawTransaction(headers: string[], data: string[]): RawTransaction {
+function createRawTransaction(headers: string[], arr: string[]): RawTransaction {
   const rawTransaction: RawTransaction = {
     date: '',
     time: '',
@@ -55,7 +55,7 @@ function parseData(results: ParseResult<string[]>) {
   const [headers, ...rawData] = results.data
 
   return rawData.map((result, i) => {
-    return createRawTransaction(result)
+    return createRawTransaction(headers, result)
   })
 }
 
