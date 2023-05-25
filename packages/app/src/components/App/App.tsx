@@ -54,9 +54,13 @@ function parseData(results: ParseResult<string[]>) {
   // I can use the headers to create and abstract data set
   const [headers, ...rawData] = results.data
 
-  return rawData.map((result, i) => {
+  const parsedData = rawData.map((result, i) => {
     return createRawTransaction(headers, result)
   })
+
+  console.log('parsedData', parsedData)
+
+  return parsedData
 }
 
 export function App() {
