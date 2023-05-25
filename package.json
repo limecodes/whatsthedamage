@@ -1,0 +1,31 @@
+{
+  "name": "whatsthedamage-v2",
+  "version": "1.0.0",
+  "description": "Browser based expense tracker",
+  "main": "index.js",
+  "repository": "git@github-limecodes:limecodes/whatsthedamage-v2.git",
+  "license": "Private",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+  	"app:start": "yarn workspace app start",
+  	"app:format": "yarn workspace app format",
+  	"app:lint:fix": "yarn workspace app lint:fix",
+  	"app:lint:check": "yarn workspace app lint:check",
+  	"lint:fix": "yarn app:lint:fix",
+  	"lint:check": "yarn app:lint:check",
+  	"format": "yarn app:format",
+  	"lint": "yarn lint:fix"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.59.7",
+    "@typescript-eslint/parser": "^5.59.7",
+    "eslint": "^8.41.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.8.8",
+    "typescript": "^5.0.4"
+  }
+}
