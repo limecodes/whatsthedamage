@@ -5,44 +5,75 @@ import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import { FileUpload } from '../FileUpload'
-import { toCamelCase } from '../../utils'
-import { RawTransaction } from './types'
+import { UploadTransactions } from '../UploadTransactions'
+import { toCamelCase, getUnixTimestamp, rawToCamelCasedHeader, toPositiveNumber, toNumber } from './utils'
+import { RawTransaction, RawHeader, Transaction } from './types'
 
-function createRawTransaction(headers: string[], row: string[]): RawTransaction {
-  const rawTransaction: RawTransaction = {}
+function convertRawToTransaction(
+  rawTransaction: RawTransaction,
+): Transaction | undefined {
+  const {
+    date = '',
+    time = '',
+    cardCurrencyAmount,
+    operationDescription = '',
+    endingBalance,
+  } = rawTransaction
 
-  headers.forEach(header => {
-  	rawTransaction[toCamelCase(header)] = ''
-  })
+  if (!cardCurrencyAmount || !endingBalance) return undefined
+
+  return {
+    timestamp: getUnixTimestamp({ date, time }),
+    amount: Math.abs(Number(cardCurrencyAmount)),
+    description: operationDescription,
+    balanceAfter: Number(endingBalance),
+  }
+}
+
+function createTransaction(
+  headers: RawHeader[],
+  row: string[],
+): Transaction | undefined {
+  const rawTransaction = headers.reduce((acc, header, index) => {
+    acc[rawToCamelCasedHeader(header)] = ''
+    return acc
+  }, {} as RawTransaction)
 
   Object.keys(rawTransaction).map((key, index) => {
     rawTransaction[key as keyof RawTransaction] = row[index]
   })
 
-  return rawTransaction
+  return convertRawToTransaction(rawTransaction)
 }
 
-function parseData(results: ParseResult<string[]>) {
+function parseResultsToTransactions(
+  results: ParseResult<string[]>,
+): Transaction[] {
   if (!results.data || results.data.length === 0) return []
 
-  const [headers, ...rawData] = results.data
+  const [headers, ...rows] = results.data
 
-  return rawData.map((result, i) => {
-    return createRawTransaction(headers, result)
-  })
+  return rows.reduce((transactions: Transaction[], row: string[]) => {
+    const transaction = createTransaction(headers as RawHeader[], row)
+    if (transaction) {
+      transactions.push(transaction)
+    }
+
+    return transactions
+  }, [])
 }
 
 export function App() {
-  const [transactions, setTransactions] = useState<RawTransaction[]>([])
+  const [transactions, setTransactions] = useState<Transaction[]>([])
 
   function handleFile(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files && event.target.files[0]
     if (file) {
       Papa.parse(file, {
-        complete: function(results: ParseResult<string[]>) {
-        	const rawTransactions = parseData(results)
+        complete: function (results: ParseResult<string[]>) {
+          const transactions = parseResultsToTransactions(results)
 
-        	setTransactions(rawTransactions)
+          setTransactions(transactions)
         },
       })
     }
@@ -50,18 +81,7 @@ export function App() {
 
   return (
     <Container>
-    	<p>{JSON.stringify(transactions)}</p>
-      <Card>
-        <CardHeader title="Step 1" />
-        <CardContent>
-          <p>Upload your statement in csv format.</p>
-          <p>
-            Retrieve a CSV statement for the period that you want to analyse.
-          </p>
-          <p>Normally it's from your last pay up to the latest pay.</p>
-          <FileUpload onFileUpload={handleFile} />
-        </CardContent>
-      </Card>
+      {transactions.length > 0 ? <p>{JSON.stringify(transactions)}</p> : <UploadTransactions onSubmitFile={handleFile} />}
     </Container>
   )
 }
