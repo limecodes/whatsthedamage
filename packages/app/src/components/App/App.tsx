@@ -5,16 +5,8 @@ import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import { FileUpload } from '../FileUpload'
-
-type RawTransaction = {
-  [key: string]: string
-}
-
-function toCamelCase(str: string) {
-  return str
-    .replace(/[^a-zA-Z0-9]+(.)/g, (_, chr) => chr.toUpperCase())
-    .replace(/^[A-Z]/, (chr) => chr.toLowerCase())
-}
+import { toCamelCase } from '../../utils'
+import { RawTransaction } from './types'
 
 function createRawTransaction(headers: string[], row: string[]): RawTransaction {
   const rawTransaction: RawTransaction = {}
@@ -33,16 +25,11 @@ function createRawTransaction(headers: string[], row: string[]): RawTransaction 
 function parseData(results: ParseResult<string[]>) {
   if (!results.data || results.data.length === 0) return []
 
-  // I can use the headers to create and abstract data set
   const [headers, ...rawData] = results.data
 
-  const parsedData = rawData.map((result, i) => {
+  return rawData.map((result, i) => {
     return createRawTransaction(headers, result)
   })
-
-  console.log('parsedData', parsedData)
-
-  return parsedData
 }
 
 export function App() {
@@ -52,13 +39,18 @@ export function App() {
     const file = event.target.files && event.target.files[0]
     if (file) {
       Papa.parse(file, {
-        complete: parseData,
+        complete: function(results: ParseResult<string[]>) {
+        	const rawTransactions = parseData(results)
+
+        	setTransactions(rawTransactions)
+        },
       })
     }
   }
 
   return (
     <Container>
+    	<p>{JSON.stringify(transactions)}</p>
       <Card>
         <CardHeader title="Step 1" />
         <CardContent>
