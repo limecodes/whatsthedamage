@@ -7,17 +7,7 @@ import CardContent from '@mui/material/CardContent'
 import { FileUpload } from '../FileUpload'
 
 type RawTransaction = {
-  date: string
-  time: string
-  category: string
-  card: string
-  operationDescription: string
-  cardCurrentAmount: string
-  cardCurrency: string
-  transactionCurrencyAmount: string
-  transactionCurrency: string
-  endingBalance: string
-  restCurrency: string
+  [key: string]: string
 }
 
 function toCamelCase(str: string) {
@@ -26,23 +16,15 @@ function toCamelCase(str: string) {
     .replace(/^[A-Z]/, (chr) => chr.toLowerCase())
 }
 
-function createRawTransaction(headers: string[], arr: string[]): RawTransaction {
-  const rawTransaction: RawTransaction = {
-    date: '',
-    time: '',
-    category: '',
-    card: '',
-    operationDescription: '',
-    cardCurrentAmount: '',
-    cardCurrency: '',
-    transactionCurrencyAmount: '',
-    transactionCurrency: '',
-    endingBalance: '',
-    restCurrency: '',
-  }
+function createRawTransaction(headers: string[], row: string[]): RawTransaction {
+  const rawTransaction: RawTransaction = {}
+
+  headers.forEach(header => {
+  	rawTransaction[toCamelCase(header)] = ''
+  })
 
   Object.keys(rawTransaction).map((key, index) => {
-    rawTransaction[key as keyof RawTransaction] = arr[index]
+    rawTransaction[key as keyof RawTransaction] = row[index]
   })
 
   return rawTransaction
