@@ -47,5 +47,5 @@ export type Category = {
 }
 
 export type SortedTransaction = Transaction & {
-  category?: Category
+  category?: string
 }

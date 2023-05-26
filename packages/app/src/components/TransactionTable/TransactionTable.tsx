@@ -29,16 +29,7 @@ export function TransactionTable({ transactions }: TransactionTableProps) {
   const [sortedTransactions, setSortedTransactions] = useState<
     SortedTransaction[]
   >([...transactions].sort((a, b) => a.timestamp - b.timestamp))
-  const [categories, setCategories] = useState<Category[]>([
-    {
-      name: 'Taxi',
-      value: 'taxi',
-    },
-    {
-      name: 'Glovo',
-      value: 'glovo',
-    },
-  ])
+  const [categories, setCategories] = useState<string[]>(['Taxi', 'Glovo'])
 
   const handleExclude = (id: string) => {
     setSortedTransactions((prevTransactions) => {
@@ -46,28 +37,18 @@ export function TransactionTable({ transactions }: TransactionTableProps) {
     })
   }
 
-  const handleAddCategory = (name: string, transactionId: string) => {
-  	const newCategory: Category = {
-  		name,
-  		value: valueFromCategoryName(name)
-  	}
-
-    setCategories((prevCategories) => [...prevCategories, newCategory])
-    handleSelectCategory(transactionId, newCategory)
+  const handleSelectCategory = (transactionId: string, category: string) => {
+  	setSortedTransactions(prevSortedTransactions => {
+  		return prevSortedTransactions.map(transaction => transaction.id === transactionId ? { ...transaction, category } : transaction)
+  	})
   }
 
-  const handleSelectCategory = (categoryValue: string, transactionId: string) => {
-  	const selectedCategory = categories.find(({ value }) => value === categoryValue)
+  const handleAddCategory = (transactionId: string, category: string) => {
+  	setCategories(prevCategories => [...prevCategories, category])
 
-  	if (selectedCategory) {
-  		setSortedTransactions((prevTransactions) => {
-      return prevTransactions.map((transaction) =>
-        transaction.id === transactionId
-          ? { ...transaction, category }
-          : transaction,
-      )
-    })
-  	}
+  	setSortedTransactions(prevSortedTransactions => {
+  		return prevSortedTransactions.map(transaction => transaction.id === transactionId ? { ...transaction, category } : transaction)
+  	})
   }
 
   return (
@@ -93,11 +74,9 @@ export function TransactionTable({ transactions }: TransactionTableProps) {
                 <TableCell>{balanceAfter}</TableCell>
                 <TableCell>
                   <SelectCategory
-                    categories={categories}
-                    onAddCategory={(categoryName) => handleAddCategory(categoryName, id)}
-                    onSelectCategory={(categoryValue) =>
-                      handleSelectCategory(categoryValue, id)
-                    }
+                  	categories={categories}
+                  	onSelectCategory={(category) => { handleSelectCategory(id, category) }}
+                  	onAddCategory={(category) => { handleAddCategory(id, category) }}
                   />
                 </TableCell>
                 <TableCell>

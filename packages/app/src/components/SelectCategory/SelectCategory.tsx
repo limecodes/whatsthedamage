@@ -1,13 +1,15 @@
 import React, { useState, useCallback, ChangeEvent } from 'react'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
+import IconButton from '@mui/material/IconButton'
+import AddIcon from '@mui/icons-material/Add'
 import MenuItem from '@mui/material/MenuItem'
 import TextField from '@mui/material/TextField'
 import { Category } from '../types'
 
 interface SelectCategoryProps {
-  categories: Category[]
-  onAddCategory: (categoryName: string) => void
-  onSelectCategory: (categoryValue: string) => void
+  categories: string[]
+  onAddCategory: (category: string) => void
+  onSelectCategory: (category: string) => void
 }
 
 export function SelectCategory({
@@ -15,36 +17,39 @@ export function SelectCategory({
   onAddCategory,
   onSelectCategory,
 }: SelectCategoryProps) {
-  const [categoryName, setCategoryName] = useState('')
+	const [category, setCategory] = useState('')
+	const [selectedCategory, setSelectedCategory] = useState('')
 
-  const handleSelectCategory = (event: SelectChangeEvent) => {
-  	onSelectCategory(event.target.value)
-  }
+	function handleSelectCategory(event: SelectChangeEvent) {
+		setSelectedCategory(event.target.value)
+		onSelectCategory(event.target.value)
+	}
 
-  const handleAddCategory = () => {
-  	onAddCategory(categoryName)
-  	setCategoryName('')
-  }
-
-  const handleChangeCategoryName = (event: ChangeEvent<HTMLInputElement>) => {
-  	setCategoryName(event.target.value)
-  }
+	function handleAddCategory() {
+		setSelectedCategory(category)
+		setCategory('')
+		onAddCategory(category)
+	}
 
   return (
-    <Select onChange={handleSelectCategory}>
-      {categories.map(({ value, name }, index) => (
-        <MenuItem key={`${value}-${index}`} value={value}>
-          {name}
+    <Select onChange={handleSelectCategory} value={selectedCategory}>
+      {categories.map((category, index) => (
+        <MenuItem key={`${category}-${index}`} value={category}>
+          {category}
         </MenuItem>
       ))}
       <TextField
         placeholder="Add new category"
-        value={categoryName}
-        onChange={handleChangeCategoryName}
+        value={category}
+        onChange={(event) => setCategory(event.target.value)}
+        InputProps={{
+          endAdornment: (
+            <IconButton onClick={handleAddCategory}>
+              <AddIcon />
+            </IconButton>
+          ),
+        }}
       />
-      <button onClick={handleAddCategory}>
-        +
-      </button>
     </Select>
   )
 }
