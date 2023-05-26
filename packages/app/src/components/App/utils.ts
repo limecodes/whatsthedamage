@@ -1,4 +1,4 @@
-import { DateTimeObject, RawHeader, CamelCasedHeader } from './types'
+import { DateTimeObject, RawHeader, CamelCasedHeader } from '../types'
 
 export function toCamelCase(str: string) {
   return str

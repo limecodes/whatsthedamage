@@ -1,20 +1,15 @@
 import React, { useState, ChangeEvent } from 'react'
 import Papa, { ParseResult } from 'papaparse'
 import Container from '@mui/material/Container'
-import Card from '@mui/material/Card'
-import CardHeader from '@mui/material/CardHeader'
-import CardContent from '@mui/material/CardContent'
-import { FileUpload } from '../FileUpload'
 import { UploadTransactions } from '../UploadTransactions'
 import { TransactionTable } from '../TransactionTable'
 import {
-  toCamelCase,
   getUnixTimestamp,
   rawToCamelCasedHeader,
   toPositiveNumber,
   toNumber,
 } from './utils'
-import { RawTransaction, RawHeader, Transaction } from './types'
+import { RawTransaction, RawHeader, Transaction } from '../types'
 
 function convertRawToTransaction(
   rawTransaction: RawTransaction,
@@ -23,17 +18,23 @@ function convertRawToTransaction(
     date = '',
     time = '',
     cardCurrencyAmount,
-    operationDescription = '',
+    operationDescription: description = '',
     endingBalance,
   } = rawTransaction
 
   if (!cardCurrencyAmount || !endingBalance) return undefined
 
+  const timestamp = getUnixTimestamp({ date, time })
+  const amount = toPositiveNumber(cardCurrencyAmount)
+  const balanceAfter = toNumber(endingBalance)
+  const id = `${timestamp}-${amount}`
+
   return {
-    timestamp: getUnixTimestamp({ date, time }),
-    amount: Math.abs(Number(cardCurrencyAmount)),
-    description: operationDescription,
-    balanceAfter: Number(endingBalance),
+    id,
+    timestamp,
+    amount,
+    description,
+    balanceAfter,
   }
 }
 
@@ -46,7 +47,7 @@ function createTransaction(
     return acc
   }, {} as RawTransaction)
 
-  Object.keys(rawTransaction).map((key, index) => {
+  Object.keys(rawTransaction).forEach((key, index) => {
     rawTransaction[key as keyof RawTransaction] = row[index]
   })
 

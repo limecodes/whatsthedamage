@@ -34,8 +34,18 @@ export type CamelCasedHeader =
   | 'restCurrency'
 
 export type Transaction = {
+  id: string
   timestamp: number
   amount: number
   description: string
   balanceAfter: number
+}
+
+export type Category = {
+  name: string
+  value: string
+}
+
+export type SortedTransaction = Transaction & {
+  category?: Category
 }
