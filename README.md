@@ -10,6 +10,8 @@ As the user categorises transactions, similar transactions are automatically cat
 
 Material UI leverages to put the primary focus on the functionality rather than the cosmetics.
 
+While the `app` is the only package in the project, I still maintain a mono-repo style in order to possibly accommodate a server application or component library in the future.
+
 ## Background
 What fills me with a sense of accomplishment about this project is the fact that it embodies what I believe to be the essence of programming – translating abstract ideas into impactful, tangible solutions to real-world problems. This project also reflects my growth and maturation as a developer over the years.
 
