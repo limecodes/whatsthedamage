@@ -1,37 +1,53 @@
-import React, { ChangeEvent } from 'react'
+import React, { ChangeEvent, ReactNode, useRef, useCallback, useState } from 'react'
 import Papa, { ParseResult } from 'papaparse'
-import Card from '@mui/material/Card'
-import CardHeader from '@mui/material/CardHeader'
-import CardContent from '@mui/material/CardContent'
-import { FileUpload } from '@app/components/FileUpload'
+import { useTransactions } from '@app/contexts'
 import { DataInputResult } from '@app/types'
 
 interface UploadTransactionsProps {
-  onTransactionsResult: (results: ParseResult<DataInputResult>) => void
+  onComplete: (results: ParseResult<DataInputResult>) => void
+  onError: (err: Error) => void
+  onContinue: () => void
 }
 
 export function UploadTransactions({
-  onTransactionsResult,
+  onComplete,
+  onError,
+  onContinue,
 }: UploadTransactionsProps) {
+	const { transactions } = useTransactions()
+
+	const inputRef = useRef<HTMLInputElement | null>(null)
+
+	// useCallback here doesn't give an advantage
+	// using it mainly for consistency
+  const handleClick = useCallback(() => {
+  	if (inputRef.current) {
+      inputRef.current.click()
+    }
+  }, [])
+
   const handleFile = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files && event.target.files[0]
 
     if (file) {
       Papa.parse(file, {
-        complete: onTransactionsResult,
+        complete: onComplete,
+        error: onError,
       })
     }
   }
 
-  return (
-    <Card>
-      <CardHeader title="Step 1" />
-      <CardContent>
-        <p>Upload your statement in csv format.</p>
-        <p>Retrieve a CSV statement for the period that you want to analyse.</p>
-        <p>Normally it's from your last pay up to the latest pay.</p>
-        <FileUpload onFileUpload={handleFile} />
-      </CardContent>
-    </Card>
+  return transactions.length === 0 ? (
+    <div>
+      <input
+        type="file"
+        style={{ display: 'none' }}
+        ref={inputRef}
+        onChange={handleFile}
+      />
+      <button onClick={handleClick}>Select File</button>
+    </div>
+  ) : (
+  	<button onClick={onContinue}>Continue</button>
   )
 }
