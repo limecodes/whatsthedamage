@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState } from 'react'
 import Table from '@mui/material/Table'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
@@ -6,7 +6,7 @@ import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
 import TableBody from '@mui/material/TableBody'
 import { SelectCategory } from '../SelectCategory'
-import { Transaction, Category, SortedTransaction } from '../types'
+import { Transaction, SortedTransaction } from '../../types'
 
 interface TransactionTableProps {
   transactions: Transaction[]
@@ -19,10 +19,6 @@ function formatUnixTimestamp(unixTimestamp: number): string {
   const year = date.getFullYear()
 
   return `${day}.${month}.${year}`
-}
-
-function valueFromCategoryName(categoryName: string): string {
-  return categoryName.toLowerCase().replace(/\s/g, '-')
 }
 
 export function TransactionTable({ transactions }: TransactionTableProps) {

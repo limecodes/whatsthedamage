@@ -1,1 +1,2 @@
-export { App } from './App'
+export { UploadTransactions } from './UploadTransactions'
+export { TransactionTable } from './TransactionTable'
