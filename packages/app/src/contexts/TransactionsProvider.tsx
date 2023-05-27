@@ -4,11 +4,14 @@ import React, {
   useState,
   useMemo,
   useContext,
+  useReducer
 } from 'react'
 import { Transaction } from '@app/types'
+import { transactionsReducer } from './transactionsReducer'
 
 type TransactionsContextValue = {
   transactions: Transaction[]
+  sortedTransactions: Transaction[]
   setTransactions: (transactions: Transaction[]) => void
 }
 
@@ -18,18 +21,28 @@ interface TransactionProviderProps {
 
 const TransactionsContext = createContext<TransactionsContextValue>({
   transactions: [],
+  sortedTransactions: [],
   setTransactions: () => {},
 })
 
 export function TransactionsProvider({ children }: TransactionProviderProps) {
-  const [transactions, setTransactions] = useState<Transaction[]>([])
+	const [transactions, dispatch] = useReducer(transactionsReducer, [])
+
+	const setTransactions = (transactions: Transaction[]) => {
+		dispatch({ type: 'SET_TRANSACTIONS', payload: transactions })
+	}
+
+  const sortedTransactions = useMemo(() => {
+    return [...transactions].sort((a, b) => a.timestamp - b.timestamp)
+  }, [transactions])
 
   const value = useMemo<TransactionsContextValue>(() => {
     return {
       transactions,
+      sortedTransactions,
       setTransactions,
     }
-  }, [transactions, setTransactions])
+  }, [transactions, sortedTransactions, setTransactions])
 
   return (
     <TransactionsContext.Provider value={value}>

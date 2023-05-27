@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ParseResult } from 'papaparse'
 import Container from '@mui/material/Container'
@@ -8,20 +8,14 @@ import CardContent from '@mui/material/CardContent'
 import { useTransactions } from '@app/contexts'
 import { UploadTransactions } from '@app/components'
 import { DataInputResult } from '@app/types'
-import { createTransaction } from '@app/utils'
+import { createTransactions } from '@app/utils'
 
 export function UploadScreen() {
   const navigate = useNavigate()
   const { setTransactions } = useTransactions()
 
   const handleTransactionsResult = useCallback(
-    ({ data }: ParseResult<DataInputResult>) => {
-      const [dataHeaders, ...dataRows] = data
-
-      setTransactions(
-        dataRows.map((dataRow) => createTransaction(dataHeaders, dataRow)),
-      )
-    },
+    ({ data }: ParseResult<DataInputResult>) => setTransactions(createTransactions(data)),
     [setTransactions],
   )
 

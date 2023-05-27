@@ -5,13 +5,19 @@ import {
   Transaction,
 } from '@app/types'
 import {
-  getUnixTimestamp,
   toPositiveNumber,
   toNumber,
   toInteger,
 } from './helpers'
+import { getUnixTimestamp } from './dateTimeHelpers'
 
-export function createTransaction(
+export function createTransactions(rawData: DataInputResult[]): Transaction[] {
+  const [dataHeaders, ...dataRows] = rawData
+
+	return dataRows.map((dataRow) => createTransaction(dataHeaders, dataRow)).sort(sortTransactionAscending)
+}
+
+function createTransaction(
   dataHeaders: string[],
   dataRow: DataInputResult,
 ): Transaction {
@@ -32,6 +38,10 @@ export function createTransaction(
     description,
     balanceAfter,
   }
+}
+
+function sortTransactionAscending(a: Transaction, b: Transaction) {
+	return a.timestamp - b.timestamp
 }
 
 function parseRawTransaction(

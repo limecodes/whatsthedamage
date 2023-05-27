@@ -6,54 +6,44 @@ import TableRow from '@mui/material/TableRow'
 import TableCell from '@mui/material/TableCell'
 import TableBody from '@mui/material/TableBody'
 import { Transaction, SortedTransaction } from '@app/types'
+import { useTransactions } from '@app/contexts'
+import { formatUnixTimestamp } from '@app/utils'
 import { SelectCategory } from '@app/components/SelectCategory'
+import { TransactionItem } from '@app/components/TransactionItem'
 
-interface TransactionTableProps {
-  transactions: Transaction[]
-}
+interface TransactionTableProps {}
 
-function formatUnixTimestamp(unixTimestamp: number): string {
-  const date = new Date(unixTimestamp * 1000)
-  const day = date.getDate().toString().padStart(2, '0')
-  const month = (date.getMonth() + 1).toString().padStart(2, '0')
-  const year = date.getFullYear()
-
-  return `${day}.${month}.${year}`
-}
-
-export function TransactionTable({ transactions }: TransactionTableProps) {
-  const [sortedTransactions, setSortedTransactions] = useState<
-    SortedTransaction[]
-  >([...transactions].sort((a, b) => a.timestamp - b.timestamp))
+export function TransactionTable() {
+  const { sortedTransactions } = useTransactions()
   const [categories, setCategories] = useState<string[]>(['Taxi', 'Glovo'])
 
-  const handleExclude = (id: string) => {
-    setSortedTransactions((prevTransactions) => {
-      return prevTransactions.filter((transaction) => transaction.id !== id)
-    })
-  }
+  // const handleExclude = (id: string) => {
+  //   setSortedTransactions((prevTransactions) => {
+  //     return prevTransactions.filter((transaction) => transaction.id !== id)
+  //   })
+  // }
 
-  const handleSelectCategory = (transactionId: string, category: string) => {
-    setSortedTransactions((prevSortedTransactions) => {
-      return prevSortedTransactions.map((transaction) =>
-        transaction.id === transactionId
-          ? { ...transaction, category }
-          : transaction,
-      )
-    })
-  }
+  // const handleSelectCategory = (transactionId: string, category: string) => {
+  //   setSortedTransactions((prevSortedTransactions) => {
+  //     return prevSortedTransactions.map((transaction) =>
+  //       transaction.id === transactionId
+  //         ? { ...transaction, category }
+  //         : transaction,
+  //     )
+  //   })
+  // }
 
-  const handleAddCategory = (transactionId: string, category: string) => {
-    setCategories((prevCategories) => [...prevCategories, category])
+  // const handleAddCategory = (transactionId: string, category: string) => {
+  //   setCategories((prevCategories) => [...prevCategories, category])
 
-    setSortedTransactions((prevSortedTransactions) => {
-      return prevSortedTransactions.map((transaction) =>
-        transaction.id === transactionId
-          ? { ...transaction, category }
-          : transaction,
-      )
-    })
-  }
+  //   setSortedTransactions((prevSortedTransactions) => {
+  //     return prevSortedTransactions.map((transaction) =>
+  //       transaction.id === transactionId
+  //         ? { ...transaction, category }
+  //         : transaction,
+  //     )
+  //   })
+  // }
 
   return (
     <TableContainer>
@@ -70,28 +60,7 @@ export function TransactionTable({ transactions }: TransactionTableProps) {
         </TableHead>
         <TableBody>
           {sortedTransactions.map(
-            ({ id, timestamp, amount, description, balanceAfter }) => (
-              <TableRow key={id}>
-                <TableCell>{formatUnixTimestamp(timestamp)}</TableCell>
-                <TableCell>{amount}</TableCell>
-                <TableCell>{description}</TableCell>
-                <TableCell>{balanceAfter}</TableCell>
-                <TableCell>
-                  <SelectCategory
-                    categories={categories}
-                    onSelectCategory={(category) => {
-                      handleSelectCategory(id, category)
-                    }}
-                    onAddCategory={(category) => {
-                      handleAddCategory(id, category)
-                    }}
-                  />
-                </TableCell>
-                <TableCell>
-                  <button onClick={() => handleExclude(id)}>Exclude</button>
-                </TableCell>
-              </TableRow>
-            ),
+            (transaction) => <TransactionItem key={transaction.id} transaction={transaction} />
           )}
         </TableBody>
       </Table>
