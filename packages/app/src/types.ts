@@ -1,16 +1,3 @@
-export type RawHeader =
-  | 'Date'
-  | 'Time'
-  | 'Category'
-  | 'Card'
-  | 'Operation description'
-  | 'Card currency amount'
-  | 'Card currency'
-  | 'Transaction currency amount'
-  | 'Transaction currency'
-  | 'Ending balance'
-  | 'Rest currency'
-
 export type Transaction = {
   id: string
   timestamp: number
@@ -23,12 +10,6 @@ export type Category = {
   name: string
   value: string
 }
-
-export type SortedTransaction = Transaction & {
-  category?: string
-}
-
-/* ===== */
 
 export enum DataInputHeader {
   date = 'Date',
