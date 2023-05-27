@@ -1,6 +1,15 @@
 # What's the Damage
 The project "What's the Damage" is a simple spending analysis tool that helps to identify where money is being spent in order to provide insight for planning a basic budget while incorporating savings.
 
+## Technical Approach
+The expense tracker is purely browser based. It doesn't depend on an API or backend database. It simple reads a CSV file and breaks down the expenses into categories. Over time expenses can be tracked against a budget by simply uploading a CSV-based statement.
+
+The budget is saved into local storage.
+
+As the user categorises transactions, similar transactions are automatically categorised. Patterns to identify similar transactions are stored in local storage for the future.
+
+Material UI leverages to put the primary focus on the functionality rather than the cosmetics.
+
 ## Background
 What fills me with a sense of accomplishment about this project is the fact that it embodies what I believe to be the essence of programming – translating abstract ideas into impactful, tangible solutions to real-world problems. This project also reflects my growth and maturation as a developer over the years.
 
