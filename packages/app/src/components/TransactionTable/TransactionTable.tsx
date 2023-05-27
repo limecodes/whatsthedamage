@@ -38,17 +38,25 @@ export function TransactionTable({ transactions }: TransactionTableProps) {
   }
 
   const handleSelectCategory = (transactionId: string, category: string) => {
-  	setSortedTransactions(prevSortedTransactions => {
-  		return prevSortedTransactions.map(transaction => transaction.id === transactionId ? { ...transaction, category } : transaction)
-  	})
+    setSortedTransactions((prevSortedTransactions) => {
+      return prevSortedTransactions.map((transaction) =>
+        transaction.id === transactionId
+          ? { ...transaction, category }
+          : transaction,
+      )
+    })
   }
 
   const handleAddCategory = (transactionId: string, category: string) => {
-  	setCategories(prevCategories => [...prevCategories, category])
+    setCategories((prevCategories) => [...prevCategories, category])
 
-  	setSortedTransactions(prevSortedTransactions => {
-  		return prevSortedTransactions.map(transaction => transaction.id === transactionId ? { ...transaction, category } : transaction)
-  	})
+    setSortedTransactions((prevSortedTransactions) => {
+      return prevSortedTransactions.map((transaction) =>
+        transaction.id === transactionId
+          ? { ...transaction, category }
+          : transaction,
+      )
+    })
   }
 
   return (
@@ -60,7 +68,7 @@ export function TransactionTable({ transactions }: TransactionTableProps) {
             <TableCell>Amount</TableCell>
             <TableCell>Description</TableCell>
             <TableCell>Balance After</TableCell>
-            <TableCell>Category</TableCell>
+            <TableCell width="200px">Category</TableCell>
             <TableCell>Actions</TableCell>
           </TableRow>
         </TableHead>
@@ -74,9 +82,13 @@ export function TransactionTable({ transactions }: TransactionTableProps) {
                 <TableCell>{balanceAfter}</TableCell>
                 <TableCell>
                   <SelectCategory
-                  	categories={categories}
-                  	onSelectCategory={(category) => { handleSelectCategory(id, category) }}
-                  	onAddCategory={(category) => { handleAddCategory(id, category) }}
+                    categories={categories}
+                    onSelectCategory={(category) => {
+                      handleSelectCategory(id, category)
+                    }}
+                    onAddCategory={(category) => {
+                      handleAddCategory(id, category)
+                    }}
                   />
                 </TableCell>
                 <TableCell>
