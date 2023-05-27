@@ -15,7 +15,8 @@ export function UploadScreen() {
   const { setTransactions } = useTransactions()
 
   const handleTransactionsResult = useCallback(
-    ({ data }: ParseResult<DataInputResult>) => setTransactions(createTransactions(data)),
+    ({ data }: ParseResult<DataInputResult>) =>
+      setTransactions(createTransactions(data)),
     [setTransactions],
   )
 

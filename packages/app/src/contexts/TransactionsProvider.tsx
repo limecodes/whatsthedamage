@@ -24,11 +24,14 @@ const TransactionsContext = createContext<TransactionsContextValue>({
 })
 
 export function TransactionsProvider({ children }: TransactionProviderProps) {
-	const [transactions, dispatch] = useReducer(transactionsReducer, [])
+  const [transactions, dispatch] = useReducer(transactionsReducer, [])
 
-	const setTransactions = useCallback((transactions: Transaction[]) => {
-		dispatch({ type: 'SET_TRANSACTIONS', payload: transactions })
-	}, [dispatch])
+  const setTransactions = useCallback(
+    (transactions: Transaction[]) => {
+      dispatch({ type: 'SET_TRANSACTIONS', payload: transactions })
+    },
+    [dispatch],
+  )
 
   const value = useMemo<TransactionsContextValue>(() => {
     return {

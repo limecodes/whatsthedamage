@@ -8,7 +8,7 @@ export type Transaction = {
 
 export type Category = {
   name: string
-  value: string
+  inputValue?: string
 }
 
 export enum DataInputHeader {

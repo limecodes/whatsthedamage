@@ -25,9 +25,9 @@ export function TransactionTable() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {transactions.map(
-            (transaction) => <TransactionItem key={transaction.id} transaction={transaction} />
-          )}
+          {transactions.map((transaction) => (
+            <TransactionItem key={transaction.id} transaction={transaction} />
+          ))}
         </TableBody>
       </Table>
     </TableContainer>
