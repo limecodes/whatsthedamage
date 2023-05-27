@@ -1,5 +1,5 @@
-# whatsthedamage
-Expense Tracker
+# What's the Damage
+The project "What's the Damage" is a simple spending analysis tool that helps to identify where money is being spent in order to provide insight for planning a basic budget while incorporating savings.
 
 ## Background
 What fills me with a sense of accomplishment about this project is the fact that it embodies what I believe to be the essence of programming – translating abstract ideas into impactful, tangible solutions to real-world problems. This project also reflects my growth and maturation as a developer over the years.
