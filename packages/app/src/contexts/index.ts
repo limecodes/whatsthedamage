@@ -1,1 +1,1 @@
-export { TransactionsProvider } from './TransactionsProvider'
+export { TransactionsProvider, useTransactions } from './TransactionsProvider'

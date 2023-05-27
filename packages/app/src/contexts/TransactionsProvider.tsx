@@ -5,10 +5,11 @@ import React, {
   useMemo,
   useContext,
 } from 'react'
-import { Transaction } from '../types'
+import { Transaction } from '@app/types'
 
 type TransactionsContextValue = {
   transactions: Transaction[]
+  setTransactions: (transactions: Transaction[]) => void
 }
 
 interface TransactionProviderProps {
@@ -17,6 +18,7 @@ interface TransactionProviderProps {
 
 const TransactionsContext = createContext<TransactionsContextValue>({
   transactions: [],
+  setTransactions: () => {},
 })
 
 export function TransactionsProvider({ children }: TransactionProviderProps) {

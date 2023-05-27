@@ -1,13 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { App } from './App'
-import { TransactionsProvider } from './contexts'
+import { WhatsTheDamageApp } from './WhatsTheDamageApp'
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
   <React.StrictMode>
-    <TransactionsProvider>
-      <App />
-    </TransactionsProvider>
+    <WhatsTheDamageApp />
   </React.StrictMode>,
 )

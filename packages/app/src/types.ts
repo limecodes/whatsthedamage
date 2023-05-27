@@ -1,11 +1,4 @@
-export type RawTransaction = {
-  [key in CamelCasedHeader]?: string
-}
 
-export type DateTimeObject = {
-  date: string
-  time: string
-}
 
 export type RawHeader =
   | 'Date'
@@ -19,19 +12,6 @@ export type RawHeader =
   | 'Transaction currency'
   | 'Ending balance'
   | 'Rest currency'
-
-export type CamelCasedHeader =
-  | 'date'
-  | 'time'
-  | 'category'
-  | 'card'
-  | 'operationDescription'
-  | 'cardCurrencyAmount'
-  | 'cardCurrency'
-  | 'transactionCurrencyAmount'
-  | 'transactionCurrency'
-  | 'endingBalance'
-  | 'restCurrency'
 
 export type Transaction = {
   id: string
@@ -49,3 +29,23 @@ export type Category = {
 export type SortedTransaction = Transaction & {
   category?: string
 }
+
+/* ===== */
+
+export enum DataInputHeader {
+  date = 'Date',
+  time = 'Time',
+  category = 'Category',
+  card = 'Card',
+  description = 'Operation description',
+  amount = 'Card currency amount',
+  currency = 'Card currency',
+  transactionCurrencyAmount = 'Transaction currency amount',
+  transactionCurrency = 'Transaction currency',
+  balanceAfter = 'Ending balance',
+  restCurrency = 'Rest currency',
+}
+
+export type RawTransaction = Record<DataInputHeader, string>
+
+export type DataInputResult = string[]
