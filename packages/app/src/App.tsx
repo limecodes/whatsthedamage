@@ -1,14 +1,14 @@
 import React, { useState, ChangeEvent } from 'react'
 import Papa, { ParseResult } from 'papaparse'
 import Container from '@mui/material/Container'
-import { UploadTransactions, TransactionTable } from './components'
+import { UploadTransactions, TransactionTable } from '@app/components'
 import {
   getUnixTimestamp,
   rawToCamelCasedHeader,
   toPositiveNumber,
   toNumber,
-} from './utils'
-import { RawTransaction, RawHeader, Transaction } from './types'
+} from '@app/utils'
+import { RawTransaction, RawHeader, Transaction } from '@app/types'
 
 function convertRawToTransaction(
   rawTransaction: RawTransaction,

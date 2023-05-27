@@ -15,7 +15,7 @@ export function SelectCategory({
   onAddCategory,
   onSelectCategory,
 }: SelectCategoryProps) {
-  const [value, setValue] = useState()
+  const [value, setValue] = useState<string | null>(null)
   const [inputValue, setInputValue] = useState('')
 
   const filter = createFilterOptions<string>()

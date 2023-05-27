@@ -2,7 +2,7 @@ import React, { ChangeEvent } from 'react'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
-import { FileUpload } from '../FileUpload'
+import { FileUpload } from '@app/components/FileUpload'
 
 interface UploadTransactionsProps {
   onSubmitFile: (event: ChangeEvent<HTMLInputElement>) => void
