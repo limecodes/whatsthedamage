@@ -34,5 +34,5 @@ export function toNumber(value: string) {
 }
 
 export function toInteger(floatNumber: number): number {
-  return Math.round(floatNumber * 100);
+  return Math.round(floatNumber * 100)
 }

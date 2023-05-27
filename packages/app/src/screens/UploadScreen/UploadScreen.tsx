@@ -11,14 +11,19 @@ import { DataInputResult } from '@app/types'
 import { createTransaction } from '@app/utils'
 
 export function UploadScreen() {
-	const navigate = useNavigate()
+  const navigate = useNavigate()
   const { setTransactions } = useTransactions()
 
-  const handleTransactionsResult = useCallback(({ data }: ParseResult<DataInputResult>) => {
-    const [dataHeaders, ...dataRows] = data
+  const handleTransactionsResult = useCallback(
+    ({ data }: ParseResult<DataInputResult>) => {
+      const [dataHeaders, ...dataRows] = data
 
-    setTransactions(dataRows.map(dataRow => createTransaction(dataHeaders, dataRow)))
-  }, [setTransactions])
+      setTransactions(
+        dataRows.map((dataRow) => createTransaction(dataHeaders, dataRow)),
+      )
+    },
+    [setTransactions],
+  )
 
   const handleContinue = useCallback(() => {
     navigate('/transactions')
@@ -26,24 +31,26 @@ export function UploadScreen() {
 
   // TODO: Show the error to the user
   const handleError = (err: Error) => {
-  	console.error(`Something went wrong uploading the file: ${err}`)
+    console.error(`Something went wrong uploading the file: ${err}`)
   }
 
   return (
     <Container>
       <Card>
-      	<CardHeader title="Step 1" />
-      		<CardContent>
-        		<p>Upload your statement in csv format.</p>
-        		<p>Retrieve a CSV statement for the period that you want to analyse.</p>
-        		<p>Normally it's from your last pay up to the latest pay.</p>
-        		<UploadTransactions
-        			onComplete={handleTransactionsResult}
-        			onError={handleError}
-        			onContinue={handleContinue}
-        		/>
-      		</CardContent>
-    		</Card>
+        <CardHeader title="Step 1" />
+        <CardContent>
+          <p>Upload your statement in csv format.</p>
+          <p>
+            Retrieve a CSV statement for the period that you want to analyse.
+          </p>
+          <p>Normally it's from your last pay up to the latest pay.</p>
+          <UploadTransactions
+            onComplete={handleTransactionsResult}
+            onError={handleError}
+            onContinue={handleContinue}
+          />
+        </CardContent>
+      </Card>
     </Container>
   )
 }

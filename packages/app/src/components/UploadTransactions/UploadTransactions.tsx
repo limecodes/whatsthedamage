@@ -1,4 +1,10 @@
-import React, { ChangeEvent, ReactNode, useRef, useCallback, useState } from 'react'
+import React, {
+  ChangeEvent,
+  ReactNode,
+  useRef,
+  useCallback,
+  useState,
+} from 'react'
 import Papa, { ParseResult } from 'papaparse'
 import { useTransactions } from '@app/contexts'
 import { DataInputResult } from '@app/types'
@@ -14,14 +20,14 @@ export function UploadTransactions({
   onError,
   onContinue,
 }: UploadTransactionsProps) {
-	const { transactions } = useTransactions()
+  const { transactions } = useTransactions()
 
-	const inputRef = useRef<HTMLInputElement | null>(null)
+  const inputRef = useRef<HTMLInputElement | null>(null)
 
-	// useCallback here doesn't give an advantage
-	// using it mainly for consistency
+  // useCallback here doesn't give an advantage
+  // using it mainly for consistency
   const handleClick = useCallback(() => {
-  	if (inputRef.current) {
+    if (inputRef.current) {
       inputRef.current.click()
     }
   }, [])
@@ -48,6 +54,6 @@ export function UploadTransactions({
       <button onClick={handleClick}>Select File</button>
     </div>
   ) : (
-  	<button onClick={onContinue}>Continue</button>
+    <button onClick={onContinue}>Continue</button>
   )
 }

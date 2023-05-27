@@ -1,5 +1,3 @@
-
-
 export type RawHeader =
   | 'Date'
   | 'Time'

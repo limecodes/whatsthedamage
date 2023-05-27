@@ -1,27 +1,43 @@
-import { DataInputResult, DataInputHeader, RawTransaction, Transaction } from '@app/types'
-import { getUnixTimestamp, toPositiveNumber, toNumber, toInteger } from './helpers'
+import {
+  DataInputResult,
+  DataInputHeader,
+  RawTransaction,
+  Transaction,
+} from '@app/types'
+import {
+  getUnixTimestamp,
+  toPositiveNumber,
+  toNumber,
+  toInteger,
+} from './helpers'
 
-export function createTransaction(dataHeaders: string[], dataRow: DataInputResult): Transaction {
-	const rawTransaction = parseRawTransaction(dataHeaders, dataRow)
+export function createTransaction(
+  dataHeaders: string[],
+  dataRow: DataInputResult,
+): Transaction {
+  const rawTransaction = parseRawTransaction(dataHeaders, dataRow)
 
-	const date = rawTransaction[DataInputHeader.date]
-	const time = rawTransaction[DataInputHeader.time]
-	const timestamp = getUnixTimestamp({ date, time })
-	const amount = toPositiveNumber(rawTransaction[DataInputHeader.amount])
-	const description = rawTransaction[DataInputHeader.description]
-	const balanceAfter = toNumber(rawTransaction[DataInputHeader.balanceAfter])
-	const id = `${timestamp}-${toInteger(amount)}`
+  const date = rawTransaction[DataInputHeader.date]
+  const time = rawTransaction[DataInputHeader.time]
+  const timestamp = getUnixTimestamp({ date, time })
+  const amount = toPositiveNumber(rawTransaction[DataInputHeader.amount])
+  const description = rawTransaction[DataInputHeader.description]
+  const balanceAfter = toNumber(rawTransaction[DataInputHeader.balanceAfter])
+  const id = `${timestamp}-${toInteger(amount)}`
 
-	return {
-		id,
-		timestamp,
-		amount,
-		description,
-		balanceAfter,
-	}
+  return {
+    id,
+    timestamp,
+    amount,
+    description,
+    balanceAfter,
+  }
 }
 
-function parseRawTransaction(dataHeaders: string[], dataRow: DataInputResult): RawTransaction {
+function parseRawTransaction(
+  dataHeaders: string[],
+  dataRow: DataInputResult,
+): RawTransaction {
   const [rawTransaction, validIndices] = createRawTransaction(dataHeaders)
 
   Object.keys(rawTransaction).forEach((key, index) => {
@@ -35,7 +51,9 @@ function parseRawTransaction(dataHeaders: string[], dataRow: DataInputResult): R
   return rawTransaction
 }
 
-function createRawTransaction(rawHeaders: string[]): [RawTransaction, number[]] {
+function createRawTransaction(
+  rawHeaders: string[],
+): [RawTransaction, number[]] {
   const validIndices: number[] = []
 
   const rawTransaction = rawHeaders.reduce((acc, rawHeader, index) => {
