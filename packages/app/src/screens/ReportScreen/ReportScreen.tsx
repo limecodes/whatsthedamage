@@ -5,6 +5,7 @@ import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
 import Button from '@mui/material/Button'
+import SaveIcon from '@mui/icons-material/Save'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { useTransactions, useCategories } from '@app/contexts'
 import { Transaction } from '@app/types'
@@ -42,25 +43,41 @@ export function ReportScreen() {
     navigate('/transactions')
   }
 
+  const handleSaveReport = () => {
+  	const reportObj = Array.from(report).reduce((acc, [category, total]) => ({
+  		...acc, [category]: toPositiveNumber(total).toFixed(2)
+  	}), {})
+
+  	localStorage.setItem('budget', JSON.stringify(reportObj))
+  }
+
   return (
     <Container>
       <Card>
         <CardHeader title="Expense Report" />
         <CardContent>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<ArrowBackIcon />}
-            onClick={goBack}
-          >
-            Go Back
-          </Button>
           {Array.from(report).map(([category, total]) => (
             <div key={category}>
               <strong>{category}: </strong> {toPositiveNumber(total).toFixed(2)}
             </div>
           ))}
-          <button>Save budget</button>
+          <Button
+						variant="contained"
+						color="primary"
+						startIcon={<ArrowBackIcon />}
+						onClick={goBack}
+						style={{ marginRight: "15px" }}
+					>
+						Go Back
+					</Button>
+					<Button
+						variant="contained"
+						color="secondary"
+						startIcon={<SaveIcon />}
+						onClick={handleSaveReport}
+					>
+						Save Budget
+					</Button>
         </CardContent>
       </Card>
     </Container>
