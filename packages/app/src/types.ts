@@ -1,5 +1,8 @@
+export type TransactionType = 'credit' | 'debit'
+
 export type Transaction = {
   id: string
+  type: TransactionType
   timestamp: number
   amount: number
   description: string

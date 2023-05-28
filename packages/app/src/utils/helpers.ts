@@ -5,8 +5,10 @@ export function toCamelCase(str: string) {
     .replace(/^[A-Z]/, (chr) => chr.toLowerCase())
 }
 
-export function toPositiveNumber(value: string) {
-  return Math.abs(toNumber(value))
+export function toPositiveNumber(value: string | number) {
+  const number = typeof value === 'number' ? value : toNumber(value)
+
+  return Math.abs(number)
 }
 
 export function toNumber(value: string) {

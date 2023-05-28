@@ -14,9 +14,14 @@ export function TransactionsScreen() {
     }
   }, [transactions, navigate])
 
+  const handleBuildReport = () => {
+    navigate('/report')
+  }
+
   return (
     <Container>
       <TransactionTable />
+      <button onClick={handleBuildReport}>Build report</button>
     </Container>
   )
 }
