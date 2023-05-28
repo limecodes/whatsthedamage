@@ -4,6 +4,7 @@ export type Transaction = {
   amount: number
   description: string
   balanceAfter: number
+  category: Category | null
 }
 
 export type Category = {

@@ -35,6 +35,9 @@ function createTransaction(
     amount,
     description,
     balanceAfter,
+    // Categories should be initialised with simply null
+    // I don't want to use the provided categories
+    category: null,
   }
 }
 
