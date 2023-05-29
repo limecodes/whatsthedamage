@@ -18,6 +18,7 @@ type TransactionsContextValue = {
     category: Category,
   ) => void
   removeTransaction: (id: Transaction['id']) => void
+  saveToLocalStorage: () => void
 }
 
 interface TransactionProviderProps {
@@ -30,10 +31,15 @@ const TransactionsContext = createContext<TransactionsContextValue>({
   updateTransaction: () => {},
   updateSimilarTransactions: () => {},
   removeTransaction: () => {},
+  saveToLocalStorage: () => {},
 })
 
 export function TransactionsProvider({ children }: TransactionProviderProps) {
-  const [transactions, dispatch] = useReducer(transactionsReducer, [])
+  // TODO, use a helper for working with local storage
+  const [transactions, dispatch] = useReducer(
+    transactionsReducer,
+    JSON.parse(window.localStorage.getItem('transactions') || '[]'),
+  )
 
   const setTransactions = useCallback(
     (transactions: Transaction[]) => {
@@ -63,6 +69,10 @@ export function TransactionsProvider({ children }: TransactionProviderProps) {
     [dispatch],
   )
 
+  const saveToLocalStorage = useCallback(() => {
+    window.localStorage.setItem('transactions', JSON.stringify(transactions))
+  }, [transactions])
+
   const value = useMemo<TransactionsContextValue>(() => {
     return {
       transactions,
@@ -70,12 +80,14 @@ export function TransactionsProvider({ children }: TransactionProviderProps) {
       updateTransaction,
       updateSimilarTransactions,
       removeTransaction,
+      saveToLocalStorage,
     }
   }, [
     transactions,
     setTransactions,
     updateSimilarTransactions,
     removeTransaction,
+    saveToLocalStorage,
   ])
 
   return (

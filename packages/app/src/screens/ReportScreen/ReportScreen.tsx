@@ -44,11 +44,15 @@ export function ReportScreen() {
   }
 
   const handleSaveReport = () => {
-  	const reportObj = Array.from(report).reduce((acc, [category, total]) => ({
-  		...acc, [category]: toPositiveNumber(total).toFixed(2)
-  	}), {})
+    const reportObj = Array.from(report).reduce(
+      (acc, [category, total]) => ({
+        ...acc,
+        [category]: toPositiveNumber(total).toFixed(2),
+      }),
+      {},
+    )
 
-  	localStorage.setItem('budget', JSON.stringify(reportObj))
+    localStorage.setItem('budget', JSON.stringify(reportObj))
   }
 
   return (
@@ -62,22 +66,22 @@ export function ReportScreen() {
             </div>
           ))}
           <Button
-						variant="contained"
-						color="primary"
-						startIcon={<ArrowBackIcon />}
-						onClick={goBack}
-						style={{ marginRight: "15px" }}
-					>
-						Go Back
-					</Button>
-					<Button
-						variant="contained"
-						color="secondary"
-						startIcon={<SaveIcon />}
-						onClick={handleSaveReport}
-					>
-						Save Budget
-					</Button>
+            variant="contained"
+            color="primary"
+            startIcon={<ArrowBackIcon />}
+            onClick={goBack}
+            style={{ marginRight: '15px' }}
+          >
+            Go Back
+          </Button>
+          <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<SaveIcon />}
+            onClick={handleSaveReport}
+          >
+            Save Budget
+          </Button>
         </CardContent>
       </Card>
     </Container>
