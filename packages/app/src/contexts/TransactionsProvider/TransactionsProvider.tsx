@@ -7,6 +7,7 @@ import React, {
   useCallback,
 } from 'react'
 import { Transaction, Category } from '@app/types'
+import { Storage } from '@app/utils'
 import { transactionsReducer } from './transactionsReducer'
 
 type TransactionsContextValue = {
@@ -38,7 +39,9 @@ export function TransactionsProvider({ children }: TransactionProviderProps) {
   // TODO, use a helper for working with local storage
   const [transactions, dispatch] = useReducer(
     transactionsReducer,
-    JSON.parse(window.localStorage.getItem('transactions') || '[]'),
+    Storage.isAvailable()
+      ? JSON.parse(Storage.getItem('transactions') || '[]')
+      : [],
   )
 
   const setTransactions = useCallback(
@@ -70,7 +73,9 @@ export function TransactionsProvider({ children }: TransactionProviderProps) {
   )
 
   const saveToLocalStorage = useCallback(() => {
-    window.localStorage.setItem('transactions', JSON.stringify(transactions))
+    if (Storage.isAvailable()) {
+      Storage.setItem('transactions', JSON.stringify(transactions))
+    }
   }, [transactions])
 
   const value = useMemo<TransactionsContextValue>(() => {
