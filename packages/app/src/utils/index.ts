@@ -1,4 +1,4 @@
 export * from './helpers'
 export * from './dateTimeHelpers'
-export * as Storage from './localStorage'
+export * as LocalStorage from './localStorage'
 export { createTransactions } from './createTransactions'
