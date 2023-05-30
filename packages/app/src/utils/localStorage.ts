@@ -1,4 +1,6 @@
-export function getItem(key: string): string | null {
+import { StorageKey } from '@app/types'
+
+export function getItem(key: StorageKey): string | null {
   try {
     return window.localStorage.getItem(key)
   } catch (e) {
@@ -7,7 +9,7 @@ export function getItem(key: string): string | null {
   }
 }
 
-export function setItem(key: string, value: string): void {
+export function setItem(key: StorageKey, value: string): void {
   try {
     window.localStorage.setItem(key, value)
   } catch (e) {
@@ -15,7 +17,7 @@ export function setItem(key: string, value: string): void {
   }
 }
 
-export function removeItem(key: string): void {
+export function removeItem(key: StorageKey): void {
   try {
     window.localStorage.removeItem(key)
   } catch (e) {

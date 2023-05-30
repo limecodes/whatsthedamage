@@ -8,82 +8,87 @@ import Button from '@mui/material/Button'
 import SaveIcon from '@mui/icons-material/Save'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 import { useTransactions, useCategories } from '@app/contexts'
-import { Transaction } from '@app/types'
+import { Transaction, Report, Budget } from '@app/types'
 import { toPositiveNumber } from '@app/utils'
 
 export function ReportScreen() {
-  const navigate = useNavigate()
-  const { transactions } = useTransactions()
-  const { categories } = useCategories()
+	const navigate = useNavigate()
+	const { transactions } = useTransactions()
+	const { categories } = useCategories()
 
-  useEffect(() => {
-    if (transactions.length === 0) {
-      navigate('/upload')
-    }
-  }, [transactions, navigate])
+	useEffect(() => {
+		if (transactions.length === 0) {
+			navigate('/upload')
+		}
+	}, [transactions, navigate])
 
-  const report = categories.reduce((acc, category) => {
-    acc.set(category.name, 0)
-    return acc
-  }, new Map<string, number>())
+	const report: Report = categories.reduce((acc, category) => {
+		acc.set(category.name, 0)
+		return acc
+	}, new Map<string, number>())
 
-  report.set('Uncategorised', 0)
+	report.set('Uncategorised', 0)
 
-  transactions.forEach((transaction) => {
-    const { category, amount, type } = transaction
+	transactions.forEach((transaction) => {
+		const { category, amount, type } = transaction
 
-    const categoryName = category ? category.name : 'Uncategorised'
-    const adjustedAmount = type === 'debit' ? -amount : amount
-    const currentTotal = report.get(categoryName) || 0
+		const categoryName = category ? category.name : 'Uncategorised'
+		const adjustedAmount = type === 'debit' ? -amount : amount
+		const currentTotal = report.get(categoryName) || 0
 
-    report.set(categoryName, currentTotal + adjustedAmount)
-  })
+		report.set(categoryName, currentTotal + adjustedAmount)
+	})
 
-  const goBack = () => {
-    navigate('/transactions')
-  }
+	const goBack = () => {
+		navigate('/transactions')
+	}
 
-  const handleSaveReport = () => {
-    const reportObj = Array.from(report).reduce(
-      (acc, [category, total]) => ({
-        ...acc,
-        [category]: toPositiveNumber(total).toFixed(2),
-      }),
-      {},
-    )
+  // TODO: I should adjust the toNumber function
+  // to convert to a decimal financial number
+  // So that my type is <string, number>
+  // So that I don't use the "toFixed" method
+  // as it's inaccurate for financial transactions
+	const handleSaveReport = () => {
+		const reportObj = Array.from(report).reduce(
+			(acc, [category, total]) => ({
+				...acc,
+				[category]: toPositiveNumber(total).toFixed(2),
+			}),
+			{} as Budget,
+		)
 
-    localStorage.setItem('budget', JSON.stringify(reportObj))
-  }
+		localStorage.setItem('budget', JSON.stringify(reportObj))
+	}
 
-  return (
-    <Container>
-      <Card>
-        <CardHeader title="Expense Report" />
-        <CardContent>
-          {Array.from(report).map(([category, total]) => (
-            <div key={category}>
-              <strong>{category}: </strong> {toPositiveNumber(total).toFixed(2)}
-            </div>
-          ))}
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<ArrowBackIcon />}
-            onClick={goBack}
-            style={{ marginRight: '15px' }}
-          >
-            Go Back
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            startIcon={<SaveIcon />}
-            onClick={handleSaveReport}
-          >
-            Save Budget
-          </Button>
-        </CardContent>
-      </Card>
-    </Container>
-  )
+	return (
+		<Container>
+			<Card>
+				<CardHeader title="Expense Report" />
+				<CardContent>
+					{Array.from(report).map(([category, total]) => (
+						<div key={category}>
+							<strong>{category}: </strong> {toPositiveNumber(total).toFixed(2)}
+						</div>
+					))}
+					<Button
+						variant="contained"
+						color="primary"
+						startIcon={<ArrowBackIcon />}
+						onClick={goBack}
+						style={{ marginRight: '15px' }}
+					>
+						Go Back
+					</Button>
+					<Button
+						variant="contained"
+						color="secondary"
+						startIcon={<SaveIcon />}
+						onClick={handleSaveReport}
+					>
+						Save Budget
+					</Button>
+				</CardContent>
+			</Card>
+		</Container>
+	)
 }
