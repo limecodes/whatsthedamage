@@ -1,34 +1,96 @@
-import React, { createContext } from 'react'
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  ReactNode,
+  useMemo,
+  useCallback,
+  useContext,
+} from 'react'
+import * as Storage from './helpers'
+import {
+  StorageKey,
+  PersistedData,
+  PersistedDataValue,
+  PersistedTransaction,
+  PersistedCategory,
+  PersistedBudget,
+} from './types'
 
-type PersistedData = Record<StorageKey, PersistedDataValue>
+type PersistedDataContextValue = [
+  PersistedData,
+  (key: StorageKey, item: PersistedDataValue) => void,
+]
 
-const initialState: PersistedData = {
-	transactions: [],
-	categories: [],
-	budget: {},
+interface PersistedDataProviderProps {
+  children: ReactNode
 }
 
-export function usePersistedData(): PersistedData {
-	const [data, setData] = useState<PersistedData>(initialState)
+const initialState: PersistedData = {
+  transactions: [],
+  categories: [],
+  budget: {},
+}
 
-	useEffect(() => {
-		if (Storage.isAvailable()) {
-			const transactions = Storage.getPersistedData<PersistedTransaction[]>(StorageKey.transactions, [])
-			const categories = Storage.getPersistedData<PersistedCategory[]>(StorageKey.categories, [])
-			const budget = Storage.getPersistedData<PersistedBudget>(StorageKey.budget, {})
+const PersistedDataContext = createContext<PersistedDataContextValue>([
+  initialState,
+  () => {},
+])
 
-			setData({ transactions, categories, budget })
-		}
-	}, [])
+export function PersistedDataProvider({
+  children,
+}: PersistedDataProviderProps) {
+  const [data, setData] = useState<PersistedData>(initialState)
 
-	const saveData = (key: StorageKey, item: PersistedDataValue) => {
-		const updatedData = { ...data, item }
-		setData(updatedData)
+  useEffect(() => {
+    if (Storage.isAvailable()) {
+      const transactions = Storage.getPersistedData<PersistedTransaction[]>(
+        StorageKey.transactions,
+        [],
+      )
+      const categories = Storage.getPersistedData<PersistedCategory[]>(
+        StorageKey.categories,
+        [],
+      )
+      const budget = Storage.getPersistedData<PersistedBudget>(
+        StorageKey.budget,
+        {},
+      )
 
-		Object.entries(updatedData).forEach(([key, value]) => {
-			Storage.persistData<PersistedDataValue>(key as StorageKey, value)
-		})
-	}
+      setData({ transactions, categories, budget })
+    }
+  }, [])
 
-	return data
+  const saveData = useCallback(
+    (key: StorageKey, item: PersistedDataValue) => {
+      const updatedData = { ...data, item }
+      setData(updatedData)
+
+      Object.entries(updatedData).forEach(([key, value]) => {
+        Storage.persistData<PersistedDataValue>(key as StorageKey, value)
+      })
+    },
+    [data],
+  )
+
+  const value = useMemo<PersistedDataContextValue>(() => {
+    return [data, saveData]
+  }, [data])
+
+  return (
+    <PersistedDataContext.Provider value={value}>
+      {children}
+    </PersistedDataContext.Provider>
+  )
+}
+
+export const usePersistedData = () => {
+  const context = useContext(PersistedDataContext)
+  if (!context) {
+    throw new Error(
+      'usePersistedData must be used within a PersistedDataProvider',
+    )
+  }
+
+  return context
 }

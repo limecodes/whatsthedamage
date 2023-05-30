@@ -1,5 +1,5 @@
-import { StorageKey } from '@app/types'
 import { LocalStorage } from '@app/utils'
+import { StorageKey } from './types'
 
 export function getPersistedData<T>(key: StorageKey, defaultValue: T): T {
   const parsedData = getParsedItem<T>(key)
