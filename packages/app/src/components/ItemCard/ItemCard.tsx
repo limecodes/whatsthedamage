@@ -12,6 +12,7 @@ interface ItemCardProps {
   title: string
   description: string
   steps: string[]
+  buttonText: string
   onAction: () => void
   addonBefore?: ReactNode
   addonAfter?: ReactNode
@@ -22,6 +23,7 @@ export function ItemCard({
   title,
   description,
   steps,
+  buttonText,
   onAction,
   addonBefore,
   addonAfter,
@@ -53,7 +55,7 @@ export function ItemCard({
             startIcon={<PlayCircleOutlineIcon />}
             onClick={onAction}
           >
-            Start
+            {buttonText}
           </Button>
           {addonActions}
         </CardActions>

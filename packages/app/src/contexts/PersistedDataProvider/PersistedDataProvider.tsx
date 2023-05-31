@@ -7,9 +7,9 @@ import React, {
   useCallback,
   useContext,
 } from 'react'
+import { StorageKey } from '@app/types'
 import * as Storage from './helpers'
 import {
-  StorageKey,
   PersistedData,
   PersistedDataValue,
   PersistedTransaction,
@@ -17,29 +17,36 @@ import {
   PersistedBudget,
 } from './types'
 
-type PersistedDataContextValue = [
-  PersistedData,
-  (key: StorageKey, item: PersistedDataValue) => void,
-]
+type PersistedDataContextValue = {
+  data: {
+  	transactions: PersistedTransaction[]
+  	categories: PersistedCategory[]
+  	budget: PersistedBudget
+  },
+  saveData: (key: StorageKey, item: PersistedDataValue) => void,
+  loaded: boolean,
+}
 
 interface PersistedDataProviderProps {
   children: ReactNode
 }
 
-const initialState: PersistedData = {
+const initialState = {
   transactions: [],
   categories: [],
   budget: {},
 }
 
-const PersistedDataContext = createContext<PersistedDataContextValue>([
-  initialState,
-  () => {},
-])
+const PersistedDataContext = createContext<PersistedDataContextValue>({
+  data: initialState,
+  saveData: () => {},
+  loaded: false,
+})
 
 export function PersistedDataProvider({
   children,
 }: PersistedDataProviderProps) {
+	const [loaded, setLoaded] = useState(false)
   const [data, setData] = useState<PersistedData>(initialState)
 
   useEffect(() => {
@@ -58,12 +65,25 @@ export function PersistedDataProvider({
       )
 
       setData({ transactions, categories, budget })
+      setLoaded(true)
     }
   }, [])
 
+  const transactions = useMemo<PersistedTransaction[]>(() => {
+  	return data.transactions as PersistedTransaction[]
+  }, [data])
+
+  const categories = useMemo<PersistedCategory[]>(() => {
+  	return data.categories as PersistedCategory[]
+  }, [data])
+
+  const budget = useMemo<PersistedBudget>(() => {
+  	return data.budget as PersistedBudget
+  }, [data])
+
   const saveData = useCallback(
     (key: StorageKey, item: PersistedDataValue) => {
-      const updatedData = { ...data, item }
+      const updatedData = { ...data, [key]: item }
       setData(updatedData)
 
       Object.entries(updatedData).forEach(([key, value]) => {
@@ -74,8 +94,16 @@ export function PersistedDataProvider({
   )
 
   const value = useMemo<PersistedDataContextValue>(() => {
-    return [data, saveData]
-  }, [data])
+    return {
+    	saveData,
+    	loaded,
+    	data: {
+    		transactions,
+    		categories,
+    		budget,
+    	},
+    }
+  }, [transactions, categories, budget, loaded, saveData])
 
   return (
     <PersistedDataContext.Provider value={value}>

@@ -11,6 +11,8 @@ import { TransactionItem } from '@app/components/TransactionItem'
 export function TransactionTable() {
   const { transactions } = useTransactions()
 
+  if (transactions.length === 0) return null
+
   return (
     <TableContainer>
       <Table>

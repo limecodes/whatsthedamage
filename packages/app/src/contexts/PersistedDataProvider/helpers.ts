@@ -1,5 +1,5 @@
 import { LocalStorage } from '@app/utils'
-import { StorageKey } from './types'
+import { StorageKey } from '@app/types'
 
 export function getPersistedData<T>(key: StorageKey, defaultValue: T): T {
   const parsedData = getParsedItem<T>(key)
@@ -9,6 +9,7 @@ export function getPersistedData<T>(key: StorageKey, defaultValue: T): T {
 
 export function persistData<T>(key: StorageKey, value: T) {
   if (LocalStorage.isAvailable()) {
+  	console.log('key', key)
     LocalStorage.setItem(key, JSON.stringify(value))
   }
 }

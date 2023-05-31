@@ -4,18 +4,21 @@ import Container from '@mui/material/Container'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import { ItemCard } from '@app/components'
+import { useTransactions } from '@app/contexts'
 
 type Action = 'setup' | 'track' | 'forecast'
 
 export function HomeScreen() {
   const navigate = useNavigate()
+  // TODO: Loaded doesn't seem appropriate for what I'm doing
+  const { loaded: transactionsLoaded } = useTransactions()
 
   // This can be a function factory to return based on action
   const handleAction = (action: Action) => () => {
     console.log('action click', action)
     switch (action) {
       case 'setup':
-        navigate('/upload')
+        navigate(transactionsLoaded ? '/transactions' : '/upload')
         break
       case 'track':
         navigate('/track')
@@ -44,6 +47,7 @@ export function HomeScreen() {
               'Examine your expenditure for each category.',
               'Establish your ideal budget per category.',
             ]}
+            buttonText={transactionsLoaded ? 'Continue' : 'Start'}
             onAction={handleAction('setup')}
           />
         </Grid>
@@ -57,6 +61,7 @@ export function HomeScreen() {
               'Let the app automatically recognize and categorize your transactions.',
               'Monitor your spending against your budget.',
             ]}
+            buttonText={'Start'}
             onAction={handleAction('track')}
           />
         </Grid>
@@ -72,6 +77,7 @@ export function HomeScreen() {
               'See the projected impact on your savings.',
               "Note: This feature assists with impulse purchases and ensures you're on track with your budget.",
             ]}
+            buttonText={'Start'}
             onAction={handleAction('forecast')}
           />
         </Grid>

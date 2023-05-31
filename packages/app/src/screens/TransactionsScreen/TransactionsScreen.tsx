@@ -20,7 +20,7 @@ export function TransactionsScreen() {
 
   useEffect(() => {
     if (transactions.length === 0) {
-      navigate('/upload')
+      navigate('/')
     }
   }, [transactions, navigate])
 

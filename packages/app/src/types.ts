@@ -37,3 +37,9 @@ export enum DataInputHeader {
 export type RawTransaction = Record<DataInputHeader, string>
 
 export type DataInputResult = string[]
+
+export enum StorageKey {
+  transactions = 'transactions',
+  categories = 'categories',
+  budget = 'budget',
+}

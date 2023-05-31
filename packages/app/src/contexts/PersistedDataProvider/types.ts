@@ -1,4 +1,4 @@
-import { Transaction, Category, Budget } from '@app/types'
+import { Transaction, Category, Budget, StorageKey } from '@app/types'
 
 // TODO: Anything dealing with Persisted<Type>
 // should go into hooks/usePersistedData/types
@@ -20,8 +20,3 @@ export type PersistedDataValue =
   | PersistedCategory[]
   | PersistedBudget
 
-export enum StorageKey {
-  transactions = 'transactions',
-  categories = 'categories',
-  budget = 'budget',
-}

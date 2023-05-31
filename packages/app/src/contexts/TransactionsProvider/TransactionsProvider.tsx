@@ -5,12 +5,14 @@ import React, {
   useContext,
   useReducer,
   useCallback,
+  useEffect,
 } from 'react'
-import { Transaction, Category } from '@app/types'
-import { Storage } from '@app/utils'
+import { Transaction, Category, StorageKey } from '@app/types'
+import { usePersistedData } from '../PersistedDataProvider'
 import { transactionsReducer } from './transactionsReducer'
 
 type TransactionsContextValue = {
+	loaded: boolean
   transactions: Transaction[]
   setTransactions: (transactions: Transaction[]) => void
   updateTransaction: (transaction: Transaction) => void
@@ -27,6 +29,7 @@ interface TransactionProviderProps {
 }
 
 const TransactionsContext = createContext<TransactionsContextValue>({
+	loaded: false,
   transactions: [],
   setTransactions: () => {},
   updateTransaction: () => {},
@@ -36,13 +39,17 @@ const TransactionsContext = createContext<TransactionsContextValue>({
 })
 
 export function TransactionsProvider({ children }: TransactionProviderProps) {
-  // TODO, use a helper for working with local storage
+  const { data, saveData, loaded: dataLoaded } = usePersistedData()
   const [transactions, dispatch] = useReducer(
     transactionsReducer,
-    Storage.isAvailable()
-      ? JSON.parse(Storage.getItem('transactions') || '[]')
-      : [],
+    [],
   )
+
+  useEffect(() => {
+  	if (dataLoaded) {
+  		setTransactions(data.transactions)
+  	}
+  }, [dataLoaded, data.transactions])
 
   const setTransactions = useCallback(
     (transactions: Transaction[]) => {
@@ -73,13 +80,16 @@ export function TransactionsProvider({ children }: TransactionProviderProps) {
   )
 
   const saveToLocalStorage = useCallback(() => {
-    if (Storage.isAvailable()) {
-      Storage.setItem('transactions', JSON.stringify(transactions))
-    }
+    saveData(StorageKey.transactions, transactions)
   }, [transactions])
+
+  const loaded = useMemo(() => {
+  	return dataLoaded && transactions.length > 0
+  }, [dataLoaded, transactions])
 
   const value = useMemo<TransactionsContextValue>(() => {
     return {
+    	loaded,
       transactions,
       setTransactions,
       updateTransaction,
@@ -88,6 +98,7 @@ export function TransactionsProvider({ children }: TransactionProviderProps) {
       saveToLocalStorage,
     }
   }, [
+  	loaded,
     transactions,
     setTransactions,
     updateSimilarTransactions,
