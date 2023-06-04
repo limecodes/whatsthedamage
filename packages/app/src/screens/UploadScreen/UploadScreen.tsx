@@ -5,19 +5,20 @@ import Container from '@mui/material/Container'
 import Card from '@mui/material/Card'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
-import { useTransactions } from '@app/contexts'
+import { useTransactions, useCategories } from '@app/contexts'
 import { UploadTransactions } from '@app/components'
 import { DataInputResult } from '@app/types'
 import { createTransactions } from '@app/utils'
 
 export function UploadScreen() {
   const navigate = useNavigate()
+  const { categories } = useCategories()
   const { setTransactions } = useTransactions()
 
   const handleTransactionsResult = useCallback(
     ({ data }: ParseResult<DataInputResult>) =>
-      setTransactions(createTransactions(data)),
-    [setTransactions],
+      setTransactions(createTransactions(data, categories)),
+    [setTransactions, categories],
   )
 
   const handleContinue = useCallback(() => {

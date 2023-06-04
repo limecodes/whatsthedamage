@@ -3,6 +3,7 @@ import { Transaction, Category } from '@app/types'
 type Action =
   | { type: 'SET_TRANSACTIONS'; transactions: Transaction[] }
   | { type: 'REMOVE_TRANSACTION'; id: Transaction['id'] }
+  | { type: 'CLEAR_TRANSACTIONS' }
   | { type: 'UPDATE_TRANSACTION'; transaction: Transaction }
   | {
       type: 'UPDATE_SIMILAR_TRANSACTIONS'
@@ -33,6 +34,8 @@ export function transactionsReducer(
           action.category,
         ),
       )
+    case 'CLEAR_TRANSACTIONS':
+      return []
     default:
       return state
   }

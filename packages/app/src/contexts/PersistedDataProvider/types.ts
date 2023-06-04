@@ -19,4 +19,3 @@ export type PersistedDataValue =
   | PersistedTransaction[]
   | PersistedCategory[]
   | PersistedBudget
-

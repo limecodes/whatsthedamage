@@ -12,7 +12,7 @@ import { usePersistedData } from '../PersistedDataProvider'
 import { transactionsReducer } from './transactionsReducer'
 
 type TransactionsContextValue = {
-	loaded: boolean
+  loaded: boolean
   transactions: Transaction[]
   setTransactions: (transactions: Transaction[]) => void
   updateTransaction: (transaction: Transaction) => void
@@ -22,6 +22,7 @@ type TransactionsContextValue = {
   ) => void
   removeTransaction: (id: Transaction['id']) => void
   saveToLocalStorage: () => void
+  clearTransactions: () => void
 }
 
 interface TransactionProviderProps {
@@ -29,27 +30,30 @@ interface TransactionProviderProps {
 }
 
 const TransactionsContext = createContext<TransactionsContextValue>({
-	loaded: false,
+  loaded: false,
   transactions: [],
   setTransactions: () => {},
   updateTransaction: () => {},
   updateSimilarTransactions: () => {},
   removeTransaction: () => {},
   saveToLocalStorage: () => {},
+  clearTransactions: () => {},
 })
 
 export function TransactionsProvider({ children }: TransactionProviderProps) {
-  const { data, saveData, loaded: dataLoaded } = usePersistedData()
-  const [transactions, dispatch] = useReducer(
-    transactionsReducer,
-    [],
-  )
+  const {
+    transactions: persistedTransactions,
+    saveData,
+    loaded: dataLoaded,
+    clearPersistedDataByKey,
+  } = usePersistedData()
+  const [transactions, dispatch] = useReducer(transactionsReducer, [])
 
   useEffect(() => {
-  	if (dataLoaded) {
-  		setTransactions(data.transactions)
-  	}
-  }, [dataLoaded, data.transactions])
+    if (dataLoaded) {
+      setTransactions(persistedTransactions)
+    }
+  }, [dataLoaded, persistedTransactions])
 
   const setTransactions = useCallback(
     (transactions: Transaction[]) => {
@@ -83,27 +87,34 @@ export function TransactionsProvider({ children }: TransactionProviderProps) {
     saveData(StorageKey.transactions, transactions)
   }, [transactions])
 
+  const clearTransactions = useCallback(() => {
+    dispatch({ type: 'CLEAR_TRANSACTIONS' })
+    clearPersistedDataByKey(StorageKey.transactions)
+  }, [dispatch, clearPersistedDataByKey])
+
   const loaded = useMemo(() => {
-  	return dataLoaded && transactions.length > 0
+    return dataLoaded && transactions.length > 0
   }, [dataLoaded, transactions])
 
   const value = useMemo<TransactionsContextValue>(() => {
     return {
-    	loaded,
+      loaded,
       transactions,
       setTransactions,
       updateTransaction,
       updateSimilarTransactions,
       removeTransaction,
       saveToLocalStorage,
+      clearTransactions,
     }
   }, [
-  	loaded,
+    loaded,
     transactions,
     setTransactions,
     updateSimilarTransactions,
     removeTransaction,
     saveToLocalStorage,
+    clearTransactions,
   ])
 
   return (

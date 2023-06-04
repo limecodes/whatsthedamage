@@ -4,21 +4,26 @@ import {
   RawTransaction,
   Transaction,
   TransactionType,
+  Category,
 } from '@app/types'
 import { toPositiveNumber, toNumber, toInteger } from './helpers'
 import { getUnixTimestamp } from './dateTimeHelpers'
 
-export function createTransactions(rawData: DataInputResult[]): Transaction[] {
+export function createTransactions(
+  rawData: DataInputResult[],
+  categories: Category[],
+): Transaction[] {
   const [dataHeaders, ...dataRows] = validateData(rawData)
 
   return dataRows
-    .map((dataRow) => createTransaction(dataHeaders, dataRow))
+    .map((dataRow) => createTransaction(dataHeaders, dataRow, categories))
     .sort(sortTransactionAscending)
 }
 
 function createTransaction(
   dataHeaders: string[],
   dataRow: DataInputResult,
+  categories: Category[],
 ): Transaction {
   const rawTransaction = parseRawTransaction(dataHeaders, dataRow)
 
@@ -30,6 +35,7 @@ function createTransaction(
   const balanceAfter = toNumber(rawTransaction[DataInputHeader.balanceAfter])
   const type = getTransactionType(rawTransaction[DataInputHeader.amount])
   const id = `${timestamp}-${toInteger(amount)}`
+  const category = getCategory(description, categories)
 
   return {
     id,
@@ -38,10 +44,21 @@ function createTransaction(
     amount,
     description,
     balanceAfter,
-    // Categories should be initialised with simply null
-    // I don't want to use the provided categories
-    category: null,
+    category,
   }
+}
+
+function getCategory(
+  description: Transaction['description'],
+  categories: Category[],
+): Category | null {
+  if (categories.length === 0) return null
+
+  const categoryByDescription = categories.find((category) =>
+    category.associatedDescriptions?.includes(description),
+  )
+
+  return categoryByDescription ? categoryByDescription : null
 }
 
 function sortTransactionAscending(a: Transaction, b: Transaction) {

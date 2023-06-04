@@ -15,6 +15,7 @@ export type CategoryName = string
 export type Category = {
   name: CategoryName
   inputValue?: string
+  associatedDescriptions?: Transaction['description'][]
 }
 
 export type Report = Map<CategoryName, number>

@@ -18,13 +18,12 @@ import {
 } from './types'
 
 type PersistedDataContextValue = {
-  data: {
-  	transactions: PersistedTransaction[]
-  	categories: PersistedCategory[]
-  	budget: PersistedBudget
-  },
-  saveData: (key: StorageKey, item: PersistedDataValue) => void,
-  loaded: boolean,
+  transactions: PersistedTransaction[]
+  categories: PersistedCategory[]
+  budget: PersistedBudget
+  loaded: boolean
+  saveData: (key: StorageKey, item: PersistedDataValue) => void
+  clearPersistedDataByKey: (key: StorageKey) => void
 }
 
 interface PersistedDataProviderProps {
@@ -38,16 +37,17 @@ const initialState = {
 }
 
 const PersistedDataContext = createContext<PersistedDataContextValue>({
-  data: initialState,
-  saveData: () => {},
+  ...initialState,
   loaded: false,
+  saveData: () => {},
+  clearPersistedDataByKey: () => {},
 })
 
 export function PersistedDataProvider({
   children,
 }: PersistedDataProviderProps) {
-	const [loaded, setLoaded] = useState(false)
-  const [data, setData] = useState<PersistedData>(initialState)
+  const [loaded, setLoaded] = useState(false)
+  const [data, setData] = useState<PersistedData>({ ...initialState })
 
   useEffect(() => {
     if (Storage.isAvailable()) {
@@ -70,16 +70,20 @@ export function PersistedDataProvider({
   }, [])
 
   const transactions = useMemo<PersistedTransaction[]>(() => {
-  	return data.transactions as PersistedTransaction[]
+    return data.transactions as PersistedTransaction[]
   }, [data])
 
   const categories = useMemo<PersistedCategory[]>(() => {
-  	return data.categories as PersistedCategory[]
+    return data.categories as PersistedCategory[]
   }, [data])
 
   const budget = useMemo<PersistedBudget>(() => {
-  	return data.budget as PersistedBudget
+    return data.budget as PersistedBudget
   }, [data])
+
+  const clearPersistedDataByKey = (key: StorageKey) => {
+    Storage.removePersistedData(key)
+  }
 
   const saveData = useCallback(
     (key: StorageKey, item: PersistedDataValue) => {
@@ -95,13 +99,12 @@ export function PersistedDataProvider({
 
   const value = useMemo<PersistedDataContextValue>(() => {
     return {
-    	saveData,
-    	loaded,
-    	data: {
-    		transactions,
-    		categories,
-    		budget,
-    	},
+      transactions,
+      categories,
+      budget,
+      clearPersistedDataByKey,
+      saveData,
+      loaded,
     }
   }, [transactions, categories, budget, loaded, saveData])
 

@@ -4,8 +4,10 @@ import React, {
   useContext,
   ReactNode,
   useMemo,
+  useEffect,
 } from 'react'
-import { Category } from '@app/types'
+import { Category, StorageKey } from '@app/types'
+import { usePersistedData } from '@app/contexts'
 
 type CategoriesContextValue = {
   categories: Category[]
@@ -24,7 +26,24 @@ const CategoriesContext = createContext<CategoriesContextValue>({
 })
 
 export function CategoriesProvider({ children }: CategroriesProviderProps) {
+  const {
+    categories: persistedCategories,
+    loaded: dataLoaded,
+    saveData,
+  } = usePersistedData()
   const [categories, setCategories] = useState<Category[]>([])
+
+  useEffect(() => {
+    if (dataLoaded) {
+      setCategories(persistedCategories)
+    }
+  }, [dataLoaded, persistedCategories])
+
+  useEffect(() => {
+    if (dataLoaded && categories.length > 0) {
+      saveData(StorageKey.categories, categories)
+    }
+  }, [dataLoaded, categories])
 
   const addCategory = (category: Category) => {
     setCategories([...categories, category])

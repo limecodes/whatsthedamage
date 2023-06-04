@@ -9,7 +9,7 @@ export function getPersistedData<T>(key: StorageKey, defaultValue: T): T {
 
 export function persistData<T>(key: StorageKey, value: T) {
   if (LocalStorage.isAvailable()) {
-  	console.log('key', key)
+    console.log('key', key)
     LocalStorage.setItem(key, JSON.stringify(value))
   }
 }
@@ -22,4 +22,8 @@ function getParsedItem<T>(key: StorageKey): T | undefined {
   const persistedData = LocalStorage.getItem(key)
 
   return persistedData ? JSON.parse(persistedData) : undefined
+}
+
+export function removePersistedData(key: StorageKey): void {
+  LocalStorage.removeItem(key)
 }

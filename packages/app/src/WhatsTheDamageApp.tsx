@@ -15,8 +15,8 @@ import {
 export function WhatsTheDamageApp() {
   return (
     <PersistedDataProvider>
-      <TransactionsProvider>
-        <CategoriesProvider>
+      <CategoriesProvider>
+        <TransactionsProvider>
           <Router>
             <Routes>
               <Route path="/" element={<HomeScreen />} />
@@ -25,8 +25,8 @@ export function WhatsTheDamageApp() {
               <Route path="/report" element={<ReportScreen />} />
             </Routes>
           </Router>
-        </CategoriesProvider>
-      </TransactionsProvider>
+        </TransactionsProvider>
+      </CategoriesProvider>
     </PersistedDataProvider>
   )
 }

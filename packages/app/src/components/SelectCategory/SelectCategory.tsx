@@ -1,14 +1,17 @@
-import React, { useState, SyntheticEvent, HTMLAttributes } from 'react'
+import React, { useState, SyntheticEvent, HTMLAttributes, useRef } from 'react'
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete'
 import { FilterOptionsState } from '@mui/material/useAutocomplete'
 import TextField from '@mui/material/TextField'
 import { Category } from '@app/types'
+
+type SelectedValue = string | Category | null
 
 interface SelectCategoryProps {
   categories: Category[]
   selectedCategory: Category | null
   onSelectCategory: (selectedValue: Category | null) => void
   onAddCategory: (newCategory: Category) => void
+  onClearCategory: () => void
 }
 
 const filter = createFilterOptions<Category>()
@@ -18,10 +21,17 @@ export function SelectCategory({
   selectedCategory,
   onAddCategory,
   onSelectCategory,
+  onClearCategory,
 }: SelectCategoryProps) {
+  const handleInputChange = (event: SyntheticEvent, value: string) => {
+    if (selectedCategory && value === '') {
+      onClearCategory()
+    }
+  }
+
   const handleSelectCategory = (
     event: SyntheticEvent,
-    selectedValue: string | Category | null,
+    selectedValue: SelectedValue,
   ) => {
     if (typeof selectedValue === 'string') {
       // Handle a selected category that exists but a value that's typed in
@@ -87,6 +97,7 @@ export function SelectCategory({
       filterOptions={setFilterOptions}
       getOptionLabel={getOptionLabel}
       onChange={handleSelectCategory}
+      onInputChange={handleInputChange}
       renderOption={(props, option) => <li {...props}>{option.name}</li>}
       renderInput={(params) => (
         <TextField

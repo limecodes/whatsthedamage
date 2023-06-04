@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Container from '@mui/material/Container'
 import AppBar from '@mui/material/AppBar'
@@ -16,7 +16,8 @@ import { TransactionTable } from '@app/components'
 
 export function TransactionsScreen() {
   const navigate = useNavigate()
-  const { transactions, saveToLocalStorage } = useTransactions()
+  const { transactions, clearTransactions, saveToLocalStorage } =
+    useTransactions()
 
   useEffect(() => {
     if (transactions.length === 0) {
@@ -27,6 +28,10 @@ export function TransactionsScreen() {
   const handleBuildReport = () => {
     navigate('/report')
   }
+
+  const handleClearTransactions = useCallback(() => {
+    clearTransactions()
+  }, [clearTransactions])
 
   return (
     <Container>
@@ -50,12 +55,13 @@ export function TransactionsScreen() {
             <EditIcon />
             Build report
           </Fab>
-          <Fab variant="extended">
-            <NavigationIcon sx={{ mr: 1 }} />
-            Navigate
-          </Fab>
-          <Fab disabled aria-label="like">
-            <FavoriteIcon />
+          <Fab
+            onClick={handleClearTransactions}
+            color="secondary"
+            aria-label="clear"
+            variant="extended"
+          >
+            Clear transactions
           </Fab>
         </Box>
       </AppBar>

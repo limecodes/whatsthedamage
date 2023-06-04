@@ -54,9 +54,18 @@ export function TransactionItem({ transaction }: TransactionItemProps) {
     [updateTransaction, transaction],
   )
 
+  const handleClearCategory = useCallback(() => {
+    updateTransaction({
+      ...transaction,
+      category: null,
+    })
+  }, [id, setSelectedCategory])
+
   const handleAddCategory = useCallback(
     (newCategory: Category) => {
-      addCategory(newCategory)
+      const associatedDescriptions = [description]
+
+      addCategory({ ...newCategory, associatedDescriptions })
     },
     [addCategory],
   )
@@ -83,6 +92,7 @@ export function TransactionItem({ transaction }: TransactionItemProps) {
           selectedCategory={selectedCategory}
           onSelectCategory={handleSelectCategory}
           onAddCategory={handleAddCategory}
+          onClearCategory={handleClearCategory}
         />
       </TableCell>
       <TableCell>
