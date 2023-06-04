@@ -9,6 +9,7 @@ import React, {
 } from 'react'
 import { Transaction, Category, StorageKey } from '@app/types'
 import { usePersistedData } from '../PersistedDataProvider'
+import { useCategories } from '../CategoriesProvider'
 import { transactionsReducer } from './transactionsReducer'
 
 type TransactionsContextValue = {
@@ -47,6 +48,7 @@ export function TransactionsProvider({ children }: TransactionProviderProps) {
     loaded: dataLoaded,
     clearPersistedDataByKey,
   } = usePersistedData()
+  const { updateCategory } = useCategories()
   const [transactions, dispatch] = useReducer(transactionsReducer, [])
 
   useEffect(() => {

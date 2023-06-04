@@ -22,7 +22,7 @@ export function TransactionItem({ transaction }: TransactionItemProps) {
     balanceAfter,
     category: transactionCategory,
   } = transaction
-  const { categories, addCategory } = useCategories()
+  const { categories, addCategory, updateCategory } = useCategories()
   const {
     transactions,
     updateTransaction,
@@ -43,15 +43,31 @@ export function TransactionItem({ transaction }: TransactionItemProps) {
 
   const handleSelectCategory = useCallback(
     (selectedValue: Category | null) => {
-      setSelectedCategory(selectedValue)
       if (selectedValue) {
+        const { associatedDescriptions } = selectedValue
+
+        if (
+          associatedDescriptions &&
+          associatedDescriptions.length > 0 &&
+          !associatedDescriptions.includes(description)
+        ) {
+          selectedValue.associatedDescriptions = [
+            ...associatedDescriptions,
+            description,
+          ]
+
+          updateCategory(selectedValue)
+        }
+
         updateTransaction({
           ...transaction,
           category: selectedValue,
         })
       }
+
+      setSelectedCategory(selectedValue)
     },
-    [updateTransaction, transaction],
+    [updateTransaction, transaction, updateCategory],
   )
 
   const handleClearCategory = useCallback(() => {

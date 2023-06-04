@@ -5,14 +5,18 @@ import React, {
   ReactNode,
   useMemo,
   useEffect,
+  useReducer,
+  useCallback,
 } from 'react'
 import { Category, StorageKey } from '@app/types'
 import { usePersistedData } from '@app/contexts'
+import { categoriesReducer } from './categoriesReducer'
 
 type CategoriesContextValue = {
   categories: Category[]
   addCategory: (category: Category) => void
   removeCategory: (category: Category) => void
+  updateCategory: (category: Category) => void
 }
 
 interface CategroriesProviderProps {
@@ -23,6 +27,7 @@ const CategoriesContext = createContext<CategoriesContextValue>({
   categories: [],
   addCategory: () => {},
   removeCategory: () => {},
+  updateCategory: () => {},
 })
 
 export function CategoriesProvider({ children }: CategroriesProviderProps) {
@@ -31,7 +36,7 @@ export function CategoriesProvider({ children }: CategroriesProviderProps) {
     loaded: dataLoaded,
     saveData,
   } = usePersistedData()
-  const [categories, setCategories] = useState<Category[]>([])
+  const [categories, dispatch] = useReducer(categoriesReducer, [])
 
   useEffect(() => {
     if (dataLoaded) {
@@ -45,21 +50,44 @@ export function CategoriesProvider({ children }: CategroriesProviderProps) {
     }
   }, [dataLoaded, categories])
 
-  const addCategory = (category: Category) => {
-    setCategories([...categories, category])
-  }
+  const setCategories = useCallback(
+    (categories: Category[]) => {
+      dispatch({ type: 'SET_CATEGORIES', categories })
+    },
+    [dispatch],
+  )
 
-  const removeCategory = (category: Category) => {
-    setCategories(categories.filter((c) => c !== category))
-  }
+  const addCategory = useCallback(
+    (category: Category) => {
+      dispatch({ type: 'ADD_CATEGORY', category })
+    },
+    [dispatch],
+  )
+
+  const removeCategory = useCallback(
+    (category: Category) => {
+      const { name } = category
+
+      dispatch({ type: 'REMOVE_CATEGORY', name })
+    },
+    [dispatch],
+  )
+
+  const updateCategory = useCallback(
+    (category: Category) => {
+      dispatch({ type: 'UPDATE_CATEGORY', category })
+    },
+    [dispatch],
+  )
 
   const value = useMemo(() => {
     return {
       categories,
       addCategory,
       removeCategory,
+      updateCategory,
     }
-  }, [categories, addCategory, removeCategory])
+  }, [categories, addCategory, removeCategory, updateCategory])
 
   return (
     <CategoriesContext.Provider value={value}>
